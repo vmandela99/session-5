@@ -1,0 +1,33 @@
+---
+title: "session 5"
+author: "Victor Mandela"
+date: "January 15, 2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+
+mobile_data <- read_csv("https://raw.githubusercontent.com/vmandela99/Class-assignment-12th-july-2019/master/mobilemoney_data.csv")
+
+table(mobile_data$mm_account_telco_main)
+
+#Rename
+mobile_data %>% rename(service_provider = mm_account_telco_main)-> mobile1
+
+#Recoding company names in the service provider
+mobile2 <- mobile1 %>% mutate(service_provider = case_when(service_provider == "Company_A"~"safcom",
+                                              service_provider =="Company_B"~"telcom",
+                                              service_provider =="Company_C"~"airtel")) %>% drop_na(service_provider)%>%  count(service_provider) %>% mutate(percentage = n/sum(n)*100)
+```
+
+```{r}
+#count the percentage
+mobile_data %>% count(account_type) %>% mutate(perce = n/sum(n)*100)
+
+#making the accounts with less than 10% into others
+mobile5 <- mobile_data %>% drop_na(account_type)%>% mutate(account_type = case_when(account_type %in% c("MFI Account","None", "Online Bank Account")~ "Others",TRUE~account_type))
+```
+
